@@ -1,20 +1,20 @@
 const fs = require('fs');
-const trinkets = require('./trinket_data');
+const { trinkets, MIN_ILEVEL, MAX_ILEVEL } = require('./trinket_data');
 const templates = require('./templates');
 
 const args = require('yargs').argv;
 
 const {
   prefix = 'trinkets',
-  chunk = Infinity,
+  chunk = 20,
   iterations = 10000,
   gearilevel = '930',
   weaponilevel = '950',
   talents = 'gg',
   apltype = '1t',
   targetcount = 1,
-  minilevel = trinkets.MIN_ILEVEL,
-  maxilevel = trinkets.MAX_ILEVEL,
+  minilevel = MIN_ILEVEL,
+  maxilevel = MAX_ILEVEL,
   trinketgroup,
 } = args;
 
@@ -31,8 +31,14 @@ if (!trinketgroup) {
 
 const bigTrinketList = t.reduce((list, trinket) => {
   const trinketCopies = [];
-  for (let i = minilevel; i <= maxilevel; i += 5) {
-    trinketCopies.push(templates.copy(trinket.name, trinket.id, i));
+  if (trinket.ilevel) {
+    trinketCopies.push(templates.copy(trinket.name, trinket.id, trinket.ilevel));
+  } else {
+    const min = trinket.min_ilevel || minilevel;
+    const max = trinket.max_ilevel || maxilevel;
+    for (let i = min; i <= max; i += 5) {
+      trinketCopies.push(templates.copy(trinket.name, trinket.id, i));
+    }
   }
   return list.concat(trinketCopies);
 }, []);
@@ -45,7 +51,7 @@ let chunkIndex = 0;
 console.log('chunks', chunks);
 
 for (let i = 0; i < chunks; i += 1) {
-  const baseline = templates.settings(i, { iterations, prefix }, targetcount === 5);
+  const baseline = templates.settings(i, { iterations, prefix: `${prefix}_${gearilevel}_${apltype}_${talents}` }, targetcount === 5);
   const enemies = templates.enemies(targetcount);
   const character = templates.character(gearilevel, weaponilevel, talents);
 

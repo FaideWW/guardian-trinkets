@@ -6,7 +6,9 @@
   "author": "Faide",
   "license": "MIT",
   "scripts": {
-    "start": "node index.js"
+    "generate": "node index.js",
+    "runall": "node runSims.js",
+    "cleanall": "rm -rf input/* output/*"
   },
   "dependencies": {
     "yargs": "^8.0.2"
