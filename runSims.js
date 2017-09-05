@@ -5,11 +5,16 @@ const exec = util.promisify(require('child_process').exec);
 const args = require('yargs').argv;
 const {
   prefix = '',
+    dryrun = false,
 } = args;
 
 async function runSim(inputFile) {
   const timeStart = Date.now();
-  const { stdout, stderr } = await exec(`./simc input/${inputFile}`);
+  if (dryrun === 'true') {
+    const { stdout, stderr } = await exec(`./simc input/${inputFile} iterations=1`);
+  } else {
+    const { stdout, stderr } = await exec(`./simc input/${inputFile}`);
+  }
   const timeEnd = Date.now();
   const elapsed = (timeEnd - timeStart) / 1000;
   return elapsed;
