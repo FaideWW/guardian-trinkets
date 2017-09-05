@@ -58,8 +58,8 @@ let chunkIndex = 0;
 console.log('chunks', chunks);
 
 for (let i = 0; i < chunks; i += 1) {
-  const baseline = templates.settings(i, { iterations, prefix: `${prefix}_${gearilevel}_${apltype}_${talents}` }, targetcount === 5);
-  const enemies = templates.enemies(targetcount);
+  const baseline = templates.settings(i, { iterations, prefix: `${prefix}_${gearilevel}_${apltype}_${talents}` }, Number(targetcount) === 5);
+  const enemies = templates.enemies(Number(targetcount));
   const character = templates.character(gearilevel, weaponilevel, talents);
 
   const apl = templates.apl(apltype);
