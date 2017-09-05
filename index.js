@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { trinkets, MIN_ILEVEL, MAX_ILEVEL } = require('./trinket_data');
+const { furyString } = require('./constants');
 const templates = require('./templates');
 
 const args = require('yargs').argv;
@@ -32,12 +33,18 @@ if (!trinketgroup) {
 const bigTrinketList = t.reduce((list, trinket) => {
   const trinketCopies = [];
   if (trinket.ilevel) {
-    trinketCopies.push(templates.copy(trinket.name, trinket.id, trinket.ilevel));
+    trinketCopies.push(templates.copy(`${trinket.name} (${trinket.ilevel})`, trinket.id, trinket.ilevel));
+    if (trinket.fury_empowerment) {
+      trinketCopies.push(templates.copy(`${trinket.name} (${trinket.ilevel}) (FoN)`, trinket.id, trinket.ilevel, furyString));
+    }
   } else {
     const min = trinket.min_ilevel || minilevel;
     const max = trinket.max_ilevel || maxilevel;
     for (let i = min; i <= max; i += 5) {
-      trinketCopies.push(templates.copy(trinket.name, trinket.id, i));
+      trinketCopies.push(templates.copy(`${trinket.name} (${i})`, trinket.id, i));
+      if (trinket.fury_empowerment) {
+        trinketCopies.push(templates.copy(`${trinket.name} (${i}) (FoN)`, trinket.id, i, furyString));
+      }
     }
   }
   return list.concat(trinketCopies);
@@ -59,6 +66,9 @@ for (let i = 0; i < chunks; i += 1) {
 
   let copies = '';
   for (let j = 0; j < chunkSize; j += 1) {
+    if (chunkIndex === bigTrinketList.length) {
+      break;
+    }
     copies += bigTrinketList[chunkIndex];
     chunkIndex += 1;
   }

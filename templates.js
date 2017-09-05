@@ -78,9 +78,10 @@ ${apls[aplType]}
           `);
 }
 
-module.exports.copy = (copyName, trinketID, ilevel) => {
+module.exports.copy = (copyName, trinketID, ilevel, gear_override = '') => {
   return (`
-copy="${copyName} (${ilevel})",Baseline
+copy="${copyName}",Baseline
 trinket1=,id=${trinketID},ilevel=${ilevel}
+${gear_override}
           `);
 };

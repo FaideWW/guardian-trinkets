@@ -142,3 +142,4 @@ actions+=/swipe_bear
 
 module.exports.apls = apls;
 
+module.exports.furyString = 'back=,id=151802,stats=0agi_0stamina_0armor_0crit_0mastery'

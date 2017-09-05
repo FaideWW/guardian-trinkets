@@ -1,4 +1,4 @@
-module.exports = {
+module.exports.trinkets = {
 
   "manual": [
     { name: "Stat stick (Crit)", id: 134203, "bonusID": 603 },
