@@ -11,11 +11,9 @@ const {
 async function runSim(inputFile) {
   const timeStart = Date.now();
   if (dryrun === 'true') {
-    const { stdout, stderr } = await exec(`./simc input/${inputFile} iterations=1 log=0`);
-    process.stdout.write();
+    const { stdout, stderr } = await exec(`./simc input/${inputFile} iterations=1 output=log.txt`);
   } else {
-    const { stdout, stderr } = await exec(`./simc input/${inputFile}`);
-    process.stdout.write();
+    const { stdout, stderr } = await exec(`./simc input/${inputFile} output=log.txt`);
   }
   const timeEnd = Date.now();
   const elapsed = (timeEnd - timeStart) / 1000;
