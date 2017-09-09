@@ -79,9 +79,12 @@ ${apls[aplType]}
 }
 
 module.exports.copy = (copyName, trinketID, ilevel, gear_override = '') => {
+  let addGearOverride = '';
+  if (gear_override !== '') {
+    addGearOverride = `profileset."${copyName}"+=${gear_override}`;
+  }
   return (`
-copy="${copyName}",Baseline
-trinket1=,id=${trinketID},ilevel=${ilevel}
-${gear_override}
+profileset."${copyName}"=trinket1=,id=${trinketID},ilevel=${ilevel}
+${addGearOverride}
           `);
 };
