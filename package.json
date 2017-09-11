@@ -9,6 +9,7 @@
     "generate": "node index.js",
     "generateall": "node generateall.js",
     "runall": "node runSims.js",
+    "collate": "node collate.js",
     "cleanall": "rm -rf input/* output/*"
   },
   "dependencies": {
