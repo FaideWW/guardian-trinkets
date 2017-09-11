@@ -78,13 +78,17 @@ ${apls[aplType]}
           `);
 }
 
-module.exports.copy = (copyName, trinketID, ilevel, gear_override = '') => {
+module.exports.copy = (copyName, trinketID, ilevel, gear_override = '', bonusID = null) => {
   let addGearOverride = '';
   if (gear_override !== '') {
     addGearOverride = `profileset."${copyName}"+=${gear_override}`;
   }
+  let bonusIDString = ``;
+  if (bonusID !== null) {
+    bonusIDString = `,bonus_id=${bonusID}`
+  }
   return (`
-profileset."${copyName}"=trinket1=,id=${trinketID},ilevel=${ilevel}
+profileset."${copyName}"=trinket1=,id=${trinketID}${bonusIDString},ilevel=${ilevel}
 ${addGearOverride}
           `);
 };

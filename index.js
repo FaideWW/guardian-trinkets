@@ -32,6 +32,7 @@ function generate({
   minilevel = MIN_ILEVEL,
   maxilevel = MAX_ILEVEL,
   trinketgroup = false,
+  trinketids = '',
   generateall
 }) {
   if (trinketgroup && !trinkets[trinketgroup]) {
@@ -45,6 +46,11 @@ function generate({
     t = Object.keys(trinkets).reduce((arr, groupname) => arr.concat(trinkets[groupname]), []);
   }
 
+  if (trinketids !== '') {
+    const trinketIDArray = trinketids.split(',').map(id => Number(id));
+    t = t.filter(trink => trinketIDArray.includes(trink.id));
+  }
+
   const bigTrinketList = t.reduce((list, trinket) => {
     const trinketCopies = [];
     if (trinket.ilevel) {
@@ -56,7 +62,7 @@ function generate({
       const min = trinket.min_ilevel || minilevel;
       const max = trinket.max_ilevel || maxilevel;
       for (let i = min; i <= max; i += 5) {
-        trinketCopies.push(templates.copy(`${trinket.name} (${i})`, trinket.id, i));
+        trinketCopies.push(templates.copy(`${trinket.name} (${i})`, trinket.id, i, '', trinket.bonusID));
         if (trinket.fury_empowerment && talents === 'gg') {
           trinketCopies.push(templates.copy(`${trinket.name} (${i}) (FoN)`, trinket.id, i, furyString));
         }

@@ -5,7 +5,8 @@ module.exports.trinkets = {
     { name: "Stat stick (Haste)", id: 134203, "bonusID": 604 },
     { name: "Stat stick (Mastery)", id: 134203, "bonusID": 605 },
     { name: "Stat stick (Versatility)", id: 134203, "bonusID": 607 },
-    { name: "Stat stick (No secondary)", id: 134203 }
+    { name: "Stat stick (No secondary)", id: 134203 },
+    { name: "Unstable Arcanocrystal", id: 141482 },
   ],
 
   "crafted": [
