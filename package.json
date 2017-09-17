@@ -6,10 +6,10 @@
   "author": "Faide",
   "license": "MIT",
   "scripts": {
-    "generate": "node index.js",
-    "generateall": "node generateall.js",
-    "runall": "node runSims.js",
-    "collate": "node collate.js",
+    "generate": "node generate-scripts/generate.js",
+    "generateall": "node generate-scripts/generateall.js",
+    "runall": "node generate-scripts/runSims.js",
+    "collate": "node generate-scripts/collate.js",
     "cleanall": "rm -rf input/* output/*"
   },
   "dependencies": {
