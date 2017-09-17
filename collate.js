@@ -3,17 +3,22 @@ const fs = require('fs');
 const args = require('yargs').argv;
 const {
   inputDir,
+  existingData = null,
   collationComment = '',
 } = args;
 
-  function collate(input) {
+  function collate(input, existingData) {
     if (!input) {
       console.log('No input dir supplied');
       process.exit(1);
     }
 
+    let fullData = {};
+    if (existingData) {
+      fullData = require(`./${existingData}`);
+    }
+
     const files = fs.readdirSync(input);
-    const fullData = {};
     const fullCSV = ['gearilevel,talent,targetcount,name,ilevel,fon,dps,relative'];
     let trinketCount = 0;
 
@@ -83,8 +88,16 @@ const {
             data[trinketName].fon = {};
           }
 
+          if (data[trinketName].fon[trinketIlevel] !== undefined) {
+            console.log(`Trinket ${trinketName} ${trinketIlevel} (FoN) already exists; overwriting (old value: ${data[trinketName].fon[trinketIlevel]}, new value: ${trinketDPS})`);
+          }
+
           data[trinketName].fon[trinketIlevel] = trinketDPS;
         } else {
+          if (data[trinketName][trinketIlevel] !== undefined) {
+            console.log(`Trinket ${trinketName} ${trinketIlevel} already exists; overwriting (old value: ${data[trinketName][trinketIlevel]}, new value: ${trinketDPS})`);
+          }
+
           data[trinketName][trinketIlevel] = trinketDPS;
 
         }
@@ -116,10 +129,6 @@ const {
               }
               if (trinketDPS - oneLower < 0) {
                 const percentError = Math.abs((trinketDPS - oneLower) / trinketDPS)
-                console.log('one lower is negative:', ilevel, talent, targetCount)
-                console.log('trinket:',trinketName, trinketIlevel, trinketDPS);
-                console.log('one lower:', trinketIlevel - 5, oneLower, '(baseline', fullData[ilevel][talent][targetCount].Baseline, ')');
-                console.log('difference of:', trinketDPS - oneLower, '(', (trinketDPS - oneLower) / trinketDPS, '%)')
                 if (percentError > 0.005) {
                   process.exit(1);
                 } else {
@@ -173,4 +182,4 @@ const {
     console.log(`Wrote ${trinketCount} trinkets to ${dirname}`);
   }
 
-  collate(inputDir);
+  collate(inputDir, existingData);
