@@ -5,7 +5,6 @@ import { AppContainer } from 'react-hot-loader';
 
 import App from './App';
 import printMe from './print';
-import './styles.css';
 
 printMe();
 ReactDOM.render(
