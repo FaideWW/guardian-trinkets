@@ -20,7 +20,8 @@
     "lodash": "^4.17.4",
     "react": "^15.6.1",
     "react-chartjs-2": "^2.6.2",
-    "react-dom": "^15.6.1"
+    "react-dom": "^15.6.1",
+    "recharts": "^1.0.0-apha.5"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
