@@ -1,3 +1,11 @@
-body {
-  background: red;
+html,body {
+  margin: 0;
+  height: 100%;
+
+  font-family: sans-serif;
+  font-size: 12px;
+}
+
+.section {
+  padding-top: 70px;
 }
