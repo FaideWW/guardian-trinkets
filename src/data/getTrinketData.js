@@ -20,11 +20,11 @@
  * }
  *
  */
-export default function getTrinketData(trinketJSON, { ilevel = 940, talents = 'gg', targetCount = '1t', isFoN = 'false' } = {}) {
+export default function getTrinketData(trinketData, { ilevel = 940, talents = 'gg', targetCount = '1t', isFoN = 'false' } = {}) {
   // Quick workaround for dungeon sims
   const patchTalents = (targetCount === '5t' && talents === 'incarn') ? 'incarnup' : talents;
 
-  const trinketCategory = trinketJSON[ilevel][patchTalents][targetCount];
+  const trinketCategory = trinketData[ilevel][patchTalents][targetCount];
   const result = [];
   const baseline = trinketCategory.Baseline;
 
@@ -33,6 +33,11 @@ export default function getTrinketData(trinketJSON, { ilevel = 940, talents = 'g
       return;
     }
     let trinket = trinketCategory[trinketName];
+
+    if (trinket.disabled) {
+      return;
+    }
+
     if (isFoN && trinket.fon) {
       trinket = trinket.fon;
     }
@@ -41,17 +46,17 @@ export default function getTrinketData(trinketJSON, { ilevel = 940, talents = 'g
     let sum = 0;
 
     Object.keys(trinket).forEach((ilevel) => {
-      if (ilevel === 'fon') {
+      if (ilevel === 'fon' || ilevel === 'disabled') {
         return;
       }
 
       let dps = trinket[ilevel];
 
-      // AHR injection
-      // TODO: compute accurate values for this
-      if (trinketName === 'Archimonde\'s Hatred Reborn') {
-        dps += 21000;
-      }
+      // // AHR injection
+      // // TODO: compute accurate values for this
+      // if (trinketName === 'Archimonde\'s Hatred Reborn') {
+      //   dps += 21000;
+      // }
 
       const gainFromBaseline = dps - baseline;
       const gainFromPrevious = dps - (trinket[Number(ilevel) - 5] || baseline);

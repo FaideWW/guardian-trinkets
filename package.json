@@ -22,6 +22,7 @@
     "react-chartjs-2": "^2.6.2",
     "react-dom": "^15.6.1",
     "react-select": "^1.0.0-rc.10",
+    "react-virtualized": "^9.10.1",
     "recharts": "^1.0.0-apha.5",
     "recompose": "^0.25.0"
   },
@@ -29,6 +30,7 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-minify-webpack-plugin": "^0.2.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-es2017": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "clean-webpack-plugin": "^0.1.16",
