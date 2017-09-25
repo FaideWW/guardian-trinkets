@@ -45,7 +45,14 @@ export default function getTrinketData(trinketJSON, { ilevel = 940, talents = 'g
         return;
       }
 
-      const dps = trinket[ilevel];
+      let dps = trinket[ilevel];
+
+      // AHR injection
+      // TODO: compute accurate values for this
+      if (trinketName === 'Archimonde\'s Hatred Reborn') {
+        dps += 21000;
+      }
+
       const gainFromBaseline = dps - baseline;
       const gainFromPrevious = dps - (trinket[Number(ilevel) - 5] || baseline);
       trinketResult[ilevel] = gainFromPrevious;
