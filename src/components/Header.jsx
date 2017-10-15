@@ -32,7 +32,7 @@ export default function Header(props) {
   return (
     <header className={styles.header}>
       <div className={styles.item}>
-        Item Level:
+        Average Gear Item Level:
         <Select className={styles.select} name="form-ilevel" options={validIlevels} onChange={props.handleSetIlevel} value={props.ilevel} clearable={false} />
       </div>
       <div className={styles.item}>
