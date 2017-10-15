@@ -59,7 +59,8 @@ const withRedirect = lifecycle({
       nextProps.display !== this.props.display
     ) {
       // Redirect
-      this.props.history.push(encodeLocationString(nextProps));
+      console.log(this.props.location.pathname);
+      this.props.history.push(this.props.location.pathname + encodeLocationString(nextProps));
     }
   },
 });
