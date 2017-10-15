@@ -1,5 +1,8 @@
 import React  from 'react';
 import PropTypes from 'prop-types';
+import { pure } from 'recompose';
+import getTrinketData from '../data/getTrinketData';
+import { formatNumber, formatPercent } from '../format';
 
 import { ResponsiveContainer, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Bar } from 'recharts';
 
@@ -26,12 +29,13 @@ const colors = {
   970: 'rgb(97, 19, 103)',
 };
 
-export default function TrinketChart(props) {
+function TrinketChart(props) {
+  const data = getTrinketData(props.data, { ...props, display: 'chart' });
   return (
     <ResponsiveContainer width="100%" maxHeight={1200} minHeight={900}>
       <BarChart 
         layout="vertical" 
-        data={props.data} 
+        data={data} 
         width={900} 
         height={1200}
       >
@@ -43,18 +47,23 @@ export default function TrinketChart(props) {
         />
         <XAxis type="number"/>
         <CartesianGrid horizontal={false} />
-        <Tooltip />
+        <Tooltip 
+          formatter={formatTrinketTooltip} 
+          itemSorter={sortTrinketTooltip}
+        />
         <Legend 
         layout="vertical"
           align="right"
           verticalAlign="top"
         />
-        {ilevelRange.map(ilevel => (
+        {ilevelRange.map((ilevel, index) => (
           <Bar 
             key={ilevel} 
+            isAnimationActive={false}
             dataKey={ilevel} 
             stackId="a" 
             fill={colors[ilevel]} 
+            onMouseOver={props.testMouseoverEvent}
           />
         ))}
       </BarChart>
@@ -63,5 +72,23 @@ export default function TrinketChart(props) {
 }
 
 TrinketChart.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  ilevel: PropTypes.number.isRequired,
+  talents: PropTypes.string.isRequired,
+  targetCount: PropTypes.string.isRequired,
+  isFoN: PropTypes.bool.isRequired,
+  data: PropTypes.object.isRequired,
 }
+
+function formatTrinketTooltip(value, name, data, index) {
+  const total = data.payload[`${name}-total`];
+  const baseline = (total - data.payload[`${name}-gain`]);
+  const gain = (total / baseline) - 1;
+  return `${formatNumber(total)} (${formatPercent(gain)})`;
+}
+
+function sortTrinketTooltip(a, b) {
+  return b.payload[`${b.name}-total`] - a.payload[`${a.name}-total`];
+}
+
+export default pure(TrinketChart);
+

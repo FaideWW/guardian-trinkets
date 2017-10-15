@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import { AppContainer } from 'react-hot-loader';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { Route, Redirect } from 'react-router';
 
 import App from './App';
 import printMe from './print';
@@ -9,7 +11,9 @@ import printMe from './print';
 printMe();
 ReactDOM.render(
   <AppContainer>
-    <App />
+    <Router>
+      <Route path="/" component={App} />
+    </Router>
   </AppContainer>,
   document.getElementById('app')
 );

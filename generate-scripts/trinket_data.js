@@ -40,6 +40,7 @@ module.exports.trinkets = {
     { id: 137439, name: "Tiny Oozeling in a Jar", fury_empowerment:true },
     { id: 137446, name: "Elementium Bomb Squirrel Generator" },
     { id: 137459, name: "Chaos Talisman" },
+    { id: 137440, name: "Shivermaw's Jawbone" },
     // Court of Stars
     { id: 137486, name: "Windscar Whetstone" },
     // Vault of the Wardens
