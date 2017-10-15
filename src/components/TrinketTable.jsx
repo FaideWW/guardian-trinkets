@@ -8,7 +8,6 @@ import styles from './TrinketTable.css';
 
 function TrinketTable(props) {
   const data = getTrinketData(props.data, { ...props, display: 'table' });
-  console.log(data);
   return (
     <table className={styles.table}>
       <thead className={styles.head}>

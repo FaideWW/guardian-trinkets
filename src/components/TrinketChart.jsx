@@ -45,7 +45,7 @@ function TrinketChart(props) {
           width={300} 
           interval={0} 
         />
-        <XAxis type="number"/>
+        <XAxis type="number" />
         <CartesianGrid horizontal={false} />
         <Tooltip 
           formatter={formatTrinketTooltip} 
