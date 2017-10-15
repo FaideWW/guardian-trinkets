@@ -5,7 +5,12 @@ const patches = [
     name: 'Add AHR damage',
     patch: (trinketData) => {
       return mapTrinketDPS(trinketData, 'Archimonde\'s Hatred Reborn', (dps, { ilevel }) => {
-        return dps + 21000;
+        const trinketDPS = {
+          900: 19840,
+          920: 23318,
+          940: 27563,
+        }
+        return dps + trinketDPS[ilevel];
       });
     },
   },

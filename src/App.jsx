@@ -15,6 +15,15 @@ const validIlevels = [900, 920, 940];
 const validTalents = ['incarn', 'gg'];
 const validTargetCounts = ['1t', '3t', '5t'];
 const validDisplays = ['chart', 'table'];
+
+const defaults = {
+  ilevel: 940,
+  talents: 'gg',
+  targetCount: '1t',
+  isFoN: false,
+  display: 'chart',
+};
+
 function isInArray(array, el) {
   return array.indexOf(el) >= 0;
 }
@@ -23,11 +32,11 @@ const withDropdownState = withStateHandlers(
   ({ location }) => {
     const stateFromLocation = decodeLocationString(location.search);
     const stateWithDefaults = {
-      ilevel: isInArray(validIlevels, Number(stateFromLocation.ilevel)) ? Number(stateFromLocation.ilevel) : 940,
-      talents: isInArray(validTalents, stateFromLocation.talents) ? stateFromLocation.talents : 'gg',
-      targetCount: isInArray(validTargetCounts, stateFromLocation.targetCount) ? stateFromLocation.targetCount : '1t',
-      isFoN: (stateFromLocation.isFoN == 'true') || false,
-      display: isInArray(validDisplays, stateFromLocation.display) ? stateFromLocation.display : 'chart',
+      ilevel: isInArray(validIlevels, Number(stateFromLocation.ilevel)) ? Number(stateFromLocation.ilevel) : defaults.ilevel,
+      talents: isInArray(validTalents, stateFromLocation.talents) ? stateFromLocation.talents : defaults.talents,
+      targetCount: isInArray(validTargetCounts, stateFromLocation.targetCount) ? stateFromLocation.targetCount : defaults.targetCount,
+      isFoN: (stateFromLocation.isFoN == 'true') || defaults.isFoN,
+      display: isInArray(validDisplays, stateFromLocation.display) ? stateFromLocation.display : defaults.display,
     };
     return stateWithDefaults;
   },
@@ -103,7 +112,32 @@ function decodeLocationString(location) {
 }
 
 function encodeLocationString(state) {
-  return `?ilevel=${state.ilevel}&talents=${state.talents}&targetCount=${state.targetCount}&isFoN=${state.isFoN}&display=${state.display}`;
+  // Remove defaults
+  let str = '?';
+
+  if (state.ilevel !== defaults.ilevel) {
+    str += `ilevel=${state.ilevel}&`;
+  }
+
+  if (state.talents !== defaults.talents) {
+    str += `talents=${state.talents}&`;
+  }
+
+  if (state.targetCount !== defaults.targetCount) {
+    str += `targetCount=${state.targetCount}&`;
+  }
+
+  if (state.isFoN !== defaults.isFoN) {
+    str += `isFoN=${state.isFoN}&`;
+  }
+
+  if (state.display !== defaults.display) {
+    str += `display=${state.display}&`;
+  }
+
+  return str.slice(0, -1);
+
+  // return `?ilevel=${state.ilevel}&talents=${state.talents}&targetCount=${state.targetCount}&isFoN=${state.isFoN}&display=${state.display}`;
 }
 
 
