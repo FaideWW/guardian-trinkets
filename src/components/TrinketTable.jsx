@@ -1,32 +1,46 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { AutoSizer, Column, Table, SortDirection, SortIndicator } from 'react-virtualized';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { pure } from 'recompose';
+import getTrinketData from '../data/getTrinketData';
+import { formatNumber, formatPercent } from '../format';
 
-const data = [
-  { name: 'a1', id: 'b1', dps: 'c1' },
-  { name: 'a2', id: 'b2', dps: 'c2' },
-  { name: 'a3', id: 'b3', dps: 'c3' },
-];
+import styles from './TrinketTable.css';
 
-export default function TrinketTable(props) {
+function TrinketTable(props) {
+  const data = getTrinketData(props.data, { ...props, display: 'table' });
+  console.log(data);
   return (
-    <AutoSizer>
-      {({ width, height }) => (
-        <Table
-          ref="Table"
-          headerHeight={headerHeight}
-          height={height}
-          overscanRowCount={10}
-          rowHeight={30}
-          rowCount={data.length}
-          rowGetter={({ index }) => data[index]}
-        />
-      )}
-    </AutoSizer>
-  )
+    <table className={styles.table}>
+      <thead className={styles.head}>
+        <tr>
+          <th className={styles.heading}>#</th>
+          <th className={styles.heading}>Name</th>
+          <th className={styles.heading}>Item Level</th>
+          <th className={styles.heading}>DPS</th>
+          <th className={styles.heading}>Gain (from Baseline)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((d, i) => (
+          <tr className={styles.row} key={i}>
+            <td className={styles.cell}>{i + 1}</td>
+            <td className={styles.cell}>{d.name}</td>
+            <td className={styles.cell}>{d.ilevel}</td>
+            <td className={styles.cell}>{formatNumber(d.dps)}</td>
+            <td className={styles.cell}>{formatPercent(d.gain)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
 }
 
 TrinketTable.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
-};
+  ilevel: PropTypes.number.isRequired,
+  talents: PropTypes.string.isRequired,
+  targetCount: PropTypes.string.isRequired,
+  isFoN: PropTypes.bool.isRequired,
+  data: PropTypes.object.isRequired,
+}
+
+export default pure(TrinketTable);

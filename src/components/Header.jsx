@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
+import DisplayButtonGroup from './DisplayButtonGroup';
 
 import styles from './Header.css';
 import 'react-select/dist/react-select.css';
@@ -44,7 +45,11 @@ export default function Header(props) {
       </div>
       <div className={styles.item}>
         Fury of Nature?:
-        <Select className={styles.select} name="form-isFoN" options={validIsFoN} onChange={props.handleSetIsFoN} value={props.isFoN} clearable={false} />
+        <Select className={styles.select} name="form-isFoN" options={validIsFoN} onChange={props.handleSetIsFoN} value={props.isFoN} clearable={false} disabled={props.talents === 'incarn'} />
+      </div>
+      <div className={styles.item}>
+        Display
+        <DisplayButtonGroup display={props.display} onChange={props.handleSetDisplay} />
       </div>
     </header>
   );

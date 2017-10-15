@@ -16,13 +16,14 @@
   },
   "dependencies": {
     "chart.js": "^2.7.0",
+    "classnames": "^2.2.5",
     "html-webpack-plugin": "^2.30.1",
     "lodash": "^4.17.4",
     "react": "^15.6.1",
     "react-chartjs-2": "^2.6.2",
     "react-dom": "^15.6.1",
+    "react-router-dom": "^4.2.2",
     "react-select": "^1.0.0-rc.10",
-    "react-virtualized": "^9.10.1",
     "recharts": "^1.0.0-apha.5",
     "recompose": "^0.25.0"
   },
