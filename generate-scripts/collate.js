@@ -19,10 +19,10 @@ const {
     }
 
     const files = fs.readdirSync(input);
-    const fullCSV = ['gearilevel,talent,targetcount,name,ilevel,fon,dps,relative'];
+    const fullCSV = ['gearilevel,talent,targetcount,pantheon,name,ilevel,fon,dps,relative'];
     let trinketCount = 0;
 
-    const filenamePattern = /(900|920|940)_(1t|3t|5t)_(gg|incarn|incarnup|incarndown)_.+_result_(\d+).json/;
+    const filenamePattern = /(900|920|940)_(1t|3t|5t)_(gg|incarn)_(p0|p5|p10|p15|p20)_result_(\d+).json/;
 
     const timestamp = new Date();
     const dateString = `${timestamp.getFullYear()}-${timestamp.getMonth()}-${timestamp.getDate()}`;
@@ -39,8 +39,10 @@ const {
     }
 
     const jsonFiles = files.filter(f => f.includes('.json'));
+    console.log('files', jsonFiles);
     jsonFiles.forEach((f) => {
-      const [fullname, ilevel, targetCount, talent, id] = f.match(filenamePattern);
+      console.log(f);
+      const [fullname, ilevel, targetCount, talent, pantheon, id] = f.match(filenamePattern);
 
       const fileContents = JSON.parse(fs.readFileSync(`${input}/${f}`));
 
@@ -54,17 +56,21 @@ const {
 
       if (!fullData[ilevel][talent][targetCount]) {
         fullData[ilevel][talent][targetCount] = {};
-        fullData[ilevel][talent][targetCount].csv = ['name,ilevel,fon,dps,relative'];
       }
 
-      const data = fullData[ilevel][talent][targetCount];
+      if (!fullData[ilevel][talent][targetCount][pantheon]) {
+        fullData[ilevel][talent][targetCount][pantheon] = {};
+        fullData[ilevel][talent][targetCount][pantheon].csv = ['name,ilevel,fon,pantheon,dps,relative'];
+      }
+
+      const data = fullData[ilevel][talent][targetCount][pantheon];
 
       const baselinePlayer = fileContents.sim.players[0];
       const baselineDPS = Math.round(baselinePlayer.collected_data.dps.mean);
       if (!data.Baseline) {
         data.Baseline = baselineDPS;
-        data.csv.push(`Baseline,,false,${baselineDPS},0`);
-        fullCSV.push(`${ilevel},${talent},${targetCount},Baseline,,false,${baselineDPS},0`);
+        data.csv.push(`Baseline,,false,${pantheon},${baselineDPS},0`);
+        fullCSV.push(`${ilevel},${talent},${targetCount},${pantheon},Baseline,,false,${baselineDPS},0`);
       } else {
         // If the baseline DPS is too far off, flag it for review
         if (Math.abs((data.Baseline / baselineDPS) - 1) > 0.01) {
@@ -112,46 +118,23 @@ const {
     Object.keys(fullData).forEach((ilevel) => {
       Object.keys(fullData[ilevel]).forEach((talent) => {
         Object.keys(fullData[ilevel][talent]).forEach((targetCount) => {
-
-          Object.keys(fullData[ilevel][talent][targetCount]).forEach((trinketName) => {
-            if (trinketName === 'fon' || trinketName === 'Baseline' || trinketName === 'csv') {
-              return;
-            }
-
-            Object.keys(fullData[ilevel][talent][targetCount][trinketName]).forEach((trinketIlevel) => {
-              if (trinketIlevel === 'fon') {
+          Object.keys(fullData[ilevel][talent][targetCount]).forEach((pantheon) => {
+            Object.keys(fullData[ilevel][talent][targetCount][pantheon]).forEach((trinketName) => {
+              if (trinketName === 'fon' || trinketName === 'Baseline' || trinketName === 'csv') {
                 return;
               }
-              const trinketDPS = fullData[ilevel][talent][targetCount][trinketName][trinketIlevel];
-              let oneLower = fullData[ilevel][talent][targetCount].Baseline;
-              if (fullData[ilevel][talent][targetCount][trinketName][trinketIlevel - 5]) {
-                oneLower = fullData[ilevel][talent][targetCount][trinketName][trinketIlevel - 5];
-              }
-              if (trinketDPS - oneLower < 0) {
-                const percentError = Math.abs((trinketDPS - oneLower) / trinketDPS)
-                if (percentError > 0.005) {
-                  process.exit(1);
-                } else {
-                  oneLower = trinketDPS;
+
+              Object.keys(fullData[ilevel][talent][targetCount][pantheon][trinketName]).forEach((trinketIlevel) => {
+                if (trinketIlevel === 'fon') {
+                  return;
                 }
-              }
-
-              fullCSV.push(`${ilevel},${talent},${targetCount},${trinketName},${trinketIlevel},false,${trinketDPS},${trinketDPS - oneLower}`);
-
-            });
-            if (fullData[ilevel][talent][targetCount][trinketName].fon) {
-              Object.keys(fullData[ilevel][talent][targetCount][trinketName].fon).forEach((trinketIlevel) => {
-                const trinketDPS = fullData[ilevel][talent][targetCount][trinketName].fon[trinketIlevel];
-                let oneLower = fullData[ilevel][talent][targetCount].Baseline;
-                if (fullData[ilevel][talent][targetCount][trinketName].fon[trinketIlevel - 5]) {
-                  oneLower = fullData[ilevel][talent][targetCount][trinketName].fon[trinketIlevel - 5];
+                const trinketDPS = fullData[ilevel][talent][targetCount][pantheon][trinketName][trinketIlevel];
+                let oneLower = fullData[ilevel][talent][targetCount][pantheon].Baseline;
+                if (fullData[ilevel][talent][targetCount][pantheon][trinketName][trinketIlevel - 5]) {
+                  oneLower = fullData[ilevel][talent][targetCount][pantheon][trinketName][trinketIlevel - 5];
                 }
                 if (trinketDPS - oneLower < 0) {
                   const percentError = Math.abs((trinketDPS - oneLower) / trinketDPS)
-                  console.log('one lower is negative:', ilevel, talent, targetCount)
-                  console.log('trinket (fon):',trinketName, trinketIlevel, trinketDPS);
-                  console.log('one lower:', trinketIlevel - 5, oneLower, '(baseline', fullData[ilevel][talent][targetCount].Baseline, ')');
-                  console.log('difference of:', trinketDPS - oneLower, '(', (trinketDPS - oneLower) / trinketDPS, '%)')
                   if (percentError > 0.005) {
                     process.exit(1);
                   } else {
@@ -159,17 +142,36 @@ const {
                   }
                 }
 
-                fullCSV.push(`${ilevel},${talent},${targetCount},${trinketName},${trinketIlevel},true,${trinketDPS},${trinketDPS - oneLower}`);
-              })
+                fullCSV.push(`${ilevel},${talent},${targetCount},${pantheon},${trinketName},${trinketIlevel},false,${trinketDPS},${trinketDPS - oneLower}`);
 
-            }
+              });
+              if (fullData[ilevel][talent][targetCount][pantheon][trinketName].fon) {
+                Object.keys(fullData[ilevel][talent][targetCount][pantheon][trinketName].fon).forEach((trinketIlevel) => {
+                  const trinketDPS = fullData[ilevel][talent][targetCount][pantheon][trinketName].fon[trinketIlevel];
+                  let oneLower = fullData[ilevel][talent][targetCount][pantheon].Baseline;
+                  if (fullData[ilevel][talent][targetCount][pantheon][trinketName].fon[trinketIlevel - 5]) {
+                    oneLower = fullData[ilevel][talent][targetCount][pantheon][trinketName].fon[trinketIlevel - 5];
+                  }
+                  if (trinketDPS - oneLower < 0) {
+                    const percentError = Math.abs((trinketDPS - oneLower) / trinketDPS)
+                    console.log('one lower is negative:', ilevel, talent, targetCount, pantheon)
+                    console.log('trinket (fon):',trinketName, trinketIlevel, trinketDPS);
+                    console.log('one lower:', trinketIlevel - 5, oneLower, '(baseline', fullData[ilevel][talent][targetCount][pantheon].Baseline, ')');
+                    console.log('difference of:', trinketDPS - oneLower, '(', (trinketDPS - oneLower) / trinketDPS, '%)')
+                    if (percentError > 0.005) {
+                      process.exit(1);
+                    } else {
+                      oneLower = trinketDPS;
+                    }
+                  }
 
-          })
+                  fullCSV.push(`${ilevel},${talent},${targetCount},${pantheon},${trinketName},${trinketIlevel},true,${trinketDPS},${trinketDPS - oneLower}`);
+                })
 
+              }
 
-
-
-
+            });
+          });
           // fs.writeFileSync(`${dirname}/${ilevel}_${targetCount}_${talent}.csv`, fullData[ilevel][talent][targetCount].csv.join('\n'));
         });
       });

@@ -52,94 +52,47 @@ module.exports.secondarystat_templates = {
   980: 8014, 985: 8210,
 };
 
-const apls = {
-  '1t': `
-actions=auto_attack
-actions+=/bristling_fur
-actions+=/potion,name=old_war,if=buff.rage_of_the_sleeper.up
-actions+=/rage_of_the_sleeper,if=(talent.rend_and_tear.enabled&((dot.thrash_bear.stack=3&!equipped.137067)|(dot.thrash_bear.stack=5&equipped.137067)))|!talent.rend_and_tear.enabled
-actions+=/incarnation,if=(cooldown.thrash_bear.remains>gcd&!action.thrash_bear.usable|cooldown.mangle.remains>gcd&!action.mangle.usable)
-actions+=/proc_sephuz
-actions+=/use_items
-actions+=/moonfire,if=buff.incarnation.remains>15&!dot.moonfire.ticking
-actions+=/barkskin,if=talent.brambles.enabled&buff.rage_of_the_sleeper.up
-actions+=/maul,if=(cooldown.rage_of_the_sleeper.remains>4&((rage>90&cooldown.thrash_bear.remains>gcd)|(cooldown.thrash_bear.remains<gcd&!action.thrash_bear.usable|cooldown.mangle.remains<gcd&!action.mangle.usable)&rage>80))|(cooldown.rage_of_the_sleeper.remains<4&((rage>80&cooldown.thrash_bear.remains>gcd)|(cooldown.thrash_bear.remains<gcd&!action.thrash_bear.usable|cooldown.mangle.remains<gcd&!action.mangle.usable)&rage>70))
-actions+=/pulverize,if=((cooldown.thrash_bear.remains<2&((dot.thrash_bear.stack=5&equipped.137067)|(dot.thrash_bear.stack=3&!equipped.137067)))|(dot.thrash_bear.stack>=2&target.time_to_die<2)|(dot.thrash_bear.stack>=4&target.time_to_die<4))
-actions+=/thrash_bear
-actions+=/mangle
-actions+=/moonfire,if=buff.galactic_guardian.up&target.adds=0|(dot.moonfire.remains<5&!(talent.galactic_guardian.enabled))
-actions+=/maul
-actions+=/swipe_bear
-  `,
+module.exports.apl = `
+potion=old_war
+flask=seventh_demon
+food=lavish_suramar_feast
+augmentation=defiled
 
-  '3t': `
-actions=auto_attack
-actions+=/bristling_fur
-actions+=/potion,name=old_war,if=buff.rage_of_the_sleeper.up
-actions+=/rage_of_the_sleeper,if=(talent.rend_and_tear.enabled&((dot.thrash_bear.stack=3&!equipped.137067)|(dot.thrash_bear.stack=5&equipped.137067)))|!talent.rend_and_tear.enabled
-actions+=/incarnation,if=(cooldown.thrash_bear.remains>gcd&!action.thrash_bear.usable|cooldown.mangle.remains>gcd&!action.mangle.usable)
-actions+=/proc_sephuz
-actions+=/use_items
-actions+=/moonfire,if=buff.incarnation.remains>15&!dot.moonfire.ticking
-actions+=/barkskin,if=talent.brambles.enabled&buff.rage_of_the_sleeper.up
-actions+=/maul,if=(cooldown.rage_of_the_sleeper.remains>4&((rage>90&cooldown.thrash_bear.remains>gcd)|(cooldown.thrash_bear.remains<gcd&!action.thrash_bear.usable|cooldown.mangle.remains<gcd&!action.mangle.usable)&rage>80))|(cooldown.rage_of_the_sleeper.remains<4&((rage>80&cooldown.thrash_bear.remains>gcd)|(cooldown.thrash_bear.remains<gcd&!action.thrash_bear.usable|cooldown.mangle.remains<gcd&!action.mangle.usable)&rage>70))
-actions+=/pulverize,if=((cooldown.thrash_bear.remains<2&((dot.thrash_bear.stack=5&equipped.137067)|(dot.thrash_bear.stack=3&!equipped.137067)))|(dot.thrash_bear.stack>=2&target.time_to_die<2)|(dot.thrash_bear.stack>=4&target.time_to_die<4))
-actions+=/thrash_bear
-actions+=/mangle
-actions+=/moonfire,if=buff.galactic_guardian.up&target.adds=0|(dot.moonfire.remains<5&!(talent.galactic_guardian.enabled))
-actions+=/maul
-actions+=/moonfire,if=equipped.151802&equipped.144295&target.adds<2
-actions+=/moonfire,if=buff.galactic_guardian.up
-actions+=/swipe_bear
-  `,
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/bear_form
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/variable,name=latc_or_fon_equipped,value=equipped.lady_and_the_child|equipped.fury_of_nature
+actions.precombat+=/variable,name=max_thrash_stacks,value=3,if=!equipped.elizes_everlasting_encasement
+actions.precombat+=/variable,name=max_thrash_stacks,value=5,if=equipped.elizes_everlasting_encasement
 
-  '5t': `
+# Executed every time the actor is available.
 actions=auto_attack
-actions+=/potion,name=prolonged_power,if=buff.rage_of_the_sleeper.up
-actions+=/barkskin,if=talent.brambles.enabled&buff.rage_of_the_sleeper.up
-actions+=/berserking,if=buff.rage_of_the_sleeper.up
-actions+=/bristling_fur,if=buff.rage_of_the_sleeper.down
-actions+=/lunar_beam,if=buff.rage_of_the_sleeper.up
-actions+=/incarnation,if=cooldown.thrash_bear.remains>0
-actions+=/rage_of_the_sleeper,if=buff.bear_form.up
-actions+=/proc_sephuz,if=cooldown.thrash_bear.remains=0
-actions+=/use_items
+actions+=/call_action_list,name=cooldowns
+actions+=/maul,if=active_enemies<6&(rage.deficit<8|cooldown.thrash_bear.remains>gcd&rage.deficit<20)
+actions+=/pulverize,if=cooldown.thrash_bear.remains<2&dot.thrash_bear.stack=variable.max_thrash_stacks
+actions+=/moonfire,if=!talent.galactic_guardian.enabled&(!dot.moonfire.ticking|(buff.incarnation.up&dot.moonfire.refreshable))&active_enemies=1
+actions+=/thrash_bear,if=((buff.incarnation.up&(dot.thrash_bear.refreshable|(equipped.luffa_wrappings|artifact.jagged_claws.rank>4)))|dot.thrash_bear.stack<variable.max_thrash_stacks|(equipped.luffa_wrappings&artifact.jagged_claws.rank>5))&!talent.soul_of_the_forest.enabled|active_enemies>1
+actions+=/mangle,if=active_enemies<4
 actions+=/thrash_bear
-actions+=/maul
+actions+=/moonfire,if=!variable.latc_or_fon_equipped&buff.galactic_guardian.up&(active_enemies<4|dot.moonfire.refreshable&active_enemies<5),cycle_targets=1
+actions+=/moonfire,if=variable.latc_or_fon_equipped&buff.galactic_guardian.up&(active_enemies<5|dot.moonfire.refreshable&active_enemies<6),cycle_targets=1
+actions+=/moonfire,if=dot.moonfire.refreshable&!talent.galactic_guardian.enabled,cycle_targets=1
+actions+=/maul,if=active_enemies<6&(cooldown.rage_of_the_sleeper.remains>10|buff.rage_of_the_sleeper.up)
+actions+=/moonfire,if=dot.moonfire.refreshable&active_enemies<3,cycle_targets=1
 actions+=/swipe_bear
-  `,
 
-  '5t_incarnup': `
-actions=auto_attack
-actions+=/potion,name=prolonged_power,if=buff.rage_of_the_sleeper.up
-actions+=/barkskin,if=talent.brambles.enabled&buff.rage_of_the_sleeper.up
-actions+=/berserking,if=buff.rage_of_the_sleeper.up
-actions+=/bristling_fur,if=buff.rage_of_the_sleeper.down
-actions+=/lunar_beam,if=buff.rage_of_the_sleeper.up
-actions+=/incarnation,if=cooldown.thrash_bear.remains>0
-actions+=/rage_of_the_sleeper,if=buff.bear_form.up
-actions+=/proc_sephuz,if=cooldown.thrash_bear.remains=0
-actions+=/use_items
-actions+=/thrash_bear
-actions+=/moonfire,if=dot.moonfire.remains<4.8&!buff.incarnation.up,cycle_targets=1
-actions+=/maul
-actions+=/swipe_bear
-  `,
-
-  '5t_incarndown': `
-actions=auto_attack
-actions+=/potion,name=prolonged_power,if=buff.rage_of_the_sleeper.up
-actions+=/berserking,if=buff.rage_of_the_sleeper.up
-actions+=/bristling_fur,if=buff.rage_of_the_sleeper.down
-actions+=/proc_sephuz,if=cooldown.thrash_bear.remains=0
-actions+=/use_items
-actions+=/thrash_bear
-actions+=/moonfire,if=dot.moonfire.remains<4.8&!buff.incarnation.up&(target.time_to_die*1.6)>(16+dot.moonfire.remains),cycle_targets=1
-actions+=/maul
-actions+=/swipe_bear
-  `,
-};
-
-module.exports.apls = apls;
+actions.cooldowns=bristling_fur,if=!buff.rage_of_the_sleeper.up
+actions.cooldowns+=/potion,if=buff.rage_of_the_sleeper.up
+actions.cooldowns+=/berserking,if=buff.rage_of_the_sleeper.up
+actions.cooldowns+=/rage_of_the_sleeper,if=(talent.rend_and_tear.enabled&dot.thrash_bear.stack=variable.max_thrash_stacks)|!talent.rend_and_tear.enabled
+actions.cooldowns+=/incarnation,if=(talent.rend_and_tear.enabled&dot.thrash_bear.stack=variable.max_thrash_stacks)|!talent.rend_and_tear.enabled
+actions.cooldowns+=/barkskin,if=talent.brambles.enabled&(buff.rage_of_the_sleeper.up|talent.survival_of_the_fittest.enabled)
+actions.cooldowns+=/proc_sephuz,if=cooldown.thrash_bear.remains=0
+actions.cooldowns+=/use_items,if=cooldown.rage_of_the_sleeper.remains>12|buff.rage_of_the_sleeper.up|target.time_to_die<22
+`;
 
 module.exports.furyString = 'back=,id=151802,stats=0agi_0stamina_0armor_0crit_0mastery'
