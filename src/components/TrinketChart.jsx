@@ -6,27 +6,31 @@ import { formatNumber, formatPercent } from '../format';
 
 import { ResponsiveContainer, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Bar } from 'recharts';
 
-const MIN_ILEVEL = 880;
-const MAX_ILEVEL = 970;
-const ilevelRange = [...Array((MAX_ILEVEL - MIN_ILEVEL) / 5 + 1).keys()].map(i => 880 + (i * 5));
+const MIN_ILEVEL = 900;
+const MAX_ILEVEL = 1000;
+const ilevelRange = [...Array((MAX_ILEVEL - MIN_ILEVEL) / 5 + 1).keys()].map(i => MIN_ILEVEL + (i * 5));
 const colors = {
-  880: 'rgb(63, 102, 203)',
-  885: 'rgb(210, 60, 32)',
-  890: 'rgb(246, 154, 28)',
-  895: 'rgb(49, 149, 23)',
-  900: 'rgb(147, 11, 153)',
-  905: 'rgb(53, 153, 197)',
-  910: 'rgb(212, 71, 121)',
-  915: 'rgb(109, 169, 3)',
-  920: 'rgb(176, 49, 51)',
-  925: 'rgb(58, 99, 148)',
-  930: 'rgb(148, 70, 153)',
-  935: 'rgb(66, 169, 152)',
-  940: 'rgb(169, 170, 25)',
-  945: 'rgb(101, 53, 203)',
-  950: 'rgb(221, 116, 24)',
-  955: 'rgb(132, 13, 16)',
-  970: 'rgb(97, 19, 103)',
+  900: 'rgb(63, 102, 203)',
+  905: 'rgb(210, 60, 32)',
+  910: 'rgb(85, 116, 166)',
+  915: 'rgb(59, 62, 172)',
+  920: 'rgb(147, 11, 153)',
+  925: 'rgb(53, 153, 197)',
+  930: 'rgb(212, 71, 121)',
+  935: 'rgb(109, 169, 3)',
+  940: 'rgb(176, 49, 51)',
+  945: 'rgb(58, 99, 148)',
+  950: 'rgb(148, 70, 153)',
+  955: 'rgb(66, 169, 152)',
+  960: 'rgb(169, 170, 25)',
+  965: 'rgb(221, 116, 24)',
+  970: 'rgb(101, 53, 203)',
+  975: 'rgb(132, 13, 16)',
+  980: 'rgb(101, 16, 103)',
+  985: 'rgb(50, 146, 98)',
+  990: 'rgb(246, 154, 28)',
+  995: 'rgb(49, 149, 23)',
+  1000: 'rgb(183, 115, 34)',
 };
 
 function TrinketChart(props) {
@@ -75,6 +79,7 @@ TrinketChart.propTypes = {
   ilevel: PropTypes.number.isRequired,
   talents: PropTypes.string.isRequired,
   targetCount: PropTypes.string.isRequired,
+  pantheon: PropTypes.string.isRequired,
   isFoN: PropTypes.bool.isRequired,
   data: PropTypes.object.isRequired,
 }

@@ -4,11 +4,12 @@ const patches = [
   {
     name: 'Add AHR damage',
     patch: (trinketData) => {
-      return mapTrinketDPS(trinketData, 'Archimonde\'s Hatred Reborn', (dps, { ilevel }) => {
+      return mapTrinketDPS(trinketData, 'Archimonde\'s Hatred Reborn', (dps, { ilevel, trinketIlevel }) => {
         const trinketDPS = {
           900: 19840,
           920: 23318,
           940: 27563,
+          960: 31563,
         }
         return dps + trinketDPS[ilevel];
       });
@@ -34,11 +35,13 @@ function mapTrinket(trinketData, trinketName, operator) {
   return mapValues(trinketData, (ilevelGroup, ilevel) => {
     return mapValues(ilevelGroup, (talentGroup, talent) => {
       return mapValues(talentGroup, (targetGroup, targetCount) => {
-        return mapValues(targetGroup, (trinket, tName) => {
-          if (trinketName === tName) {
-            trinket = operator(trinket, { ilevel, talent, targetCount });
-          }
-          return trinket;
+        return mapValues(targetGroup, (pantheonGroup, pantheon) => {
+          return mapValues(pantheonGroup, (trinket, tName) => {
+            if (trinketName === tName) {
+              trinket = operator(trinket, { ilevel, talent, targetCount, pantheon });
+            }
+            return trinket;
+          });
         });
       })
     })

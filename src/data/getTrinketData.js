@@ -1,4 +1,12 @@
-
+import {
+  DEFAULT_ILEVEL,
+  DEFAULT_TALENTS,
+  DEFAULT_TARGETCOUNT,
+  DEFAULT_PANTHEON,
+  DEFAULT_FON,
+  DEFAULT_DISPLAY,
+  PANTHEON_TRINKET_NAMES,
+} from '../constants';
 /**
  * format:
  * {
@@ -23,19 +31,19 @@
 
 const cache = {};
 
-function makeChartData(trinketData, { ilevel = 940, talents = 'gg', targetCount = '1t', isFoN = 'false', display = 'chart' } = {}) {
-  const optionsString = encodeOptionsString(ilevel, talents, targetCount, isFoN, display);
-  // Quick workaround for dungeon sims
-  const patchTalents = (targetCount === '5t' && talents === 'incarn') ? 'incarnup' : talents;
-
-
-
-  const trinketCategory = trinketData[ilevel][patchTalents][targetCount];
-  const result = [];
+function makeChartData(trinketData, { ilevel = DEFAULT_ILEVEL, talents = DEFAULT_TALENTS, targetCount = DEFAULT_TARGETCOUNT, pantheon = DEFAULT_PANTHEON, isFoN = DEFAULT_FON, display = DEFAULT_DISPLAY } = {}, ignorePantheonTrinkets = false) {
+  const optionsString = encodeOptionsString(ilevel, talents, targetCount, pantheon, isFoN, display);
+  const trinketCategory = trinketData[ilevel][talents][targetCount][pantheon];
+  let result = [];
   const baseline = trinketCategory.Baseline;
 
+  // Only pantheon trinkets were simmed at >p0, so fetch the p0 trinkets first and overwrite the pantheon ones
+  if (pantheon !== 'p0') {
+    result = makeChartData(trinketData, { ilevel, talents, targetCount, pantheon: 'p0', isFoN, display }, true);
+  }
+
   Object.keys(trinketCategory).forEach((trinketName) => {
-    if (trinketName === 'Baseline' || trinketName === 'csv') {
+    if (trinketName === 'Baseline' || trinketName === 'csv' || (ignorePantheonTrinkets && PANTHEON_TRINKET_NAMES.includes(trinketName))) {
       return;
     }
     let trinket = trinketCategory[trinketName];
@@ -59,7 +67,7 @@ function makeChartData(trinketData, { ilevel = 940, talents = 'gg', targetCount 
       let dps = trinket[ilevel];
 
       const gainFromBaseline = dps - baseline;
-      const gainFromPrevious = dps - (trinket[Number(ilevel) - 5] || baseline);
+      const gainFromPrevious = dps - (trinket[Number(ilevel) - 5] || (trinket[Number(ilevel) - 30]) || baseline);
       trinketResult[ilevel] = gainFromPrevious;
       trinketResult[`${ilevel}-gain`] = gainFromBaseline;
       trinketResult[`${ilevel}-total`] = dps;
@@ -72,17 +80,24 @@ function makeChartData(trinketData, { ilevel = 940, talents = 'gg', targetCount 
 
   const sortedResult = result.sort((a, b) => b.sum - a.sum);
 
-  cache[optionsString] = sortedResult;
+  if (!ignorePantheonTrinkets) {
+    cache[optionsString] = sortedResult;
+  }
   return sortedResult;
 }
 
-function makeTableData(trinketData, { ilevel = 940, talents = 'gg', targetCount = '1t', isFoN = 'false', display = 'chart' } = {}) {
-  const optionsString = encodeOptionsString(ilevel, talents, targetCount, isFoN, display);
+function makeTableData(trinketData, { ilevel = DEFAULT_ILEVEL, talents = DEFAULT_TALENTS, targetCount = DEFAULT_TARGETCOUNT, pantheon = DEFAULT_PANTHEON, isFoN = DEFAULT_FON, display = DEFAULT_DISPLAY } = {}, ignorePantheonTrinkets = false) {
+  const optionsString = encodeOptionsString(ilevel, talents, targetCount, pantheon, isFoN, display);
   // Quick workaround for dungeon sims
-  const patchTalents = (targetCount === '5t' && talents === 'incarn') ? 'incarnup' : talents;
-  const trinketCategory = trinketData[ilevel][patchTalents][targetCount];
-  const result = [];
+  const trinketCategory = trinketData[ilevel][talents][targetCount][pantheon];
+  let result = [];
   const baseline = trinketCategory.Baseline;
+
+
+  // Only pantheon trinkets were simmed at >p0, so fetch the p0 trinkets first and overwrite the pantheon ones
+  if (pantheon !== 'p0') {
+    result = makeTableData(trinketData, { ilevel, talents, targetCount, pantheon: 'p0', isFoN, display }, true);
+  }
 
   Object.keys(trinketCategory).forEach((trinketName) => {
     if (trinketName === 'csv') {
@@ -137,23 +152,25 @@ function makeTableData(trinketData, { ilevel = 940, talents = 'gg', targetCount 
 
   const sortedResult = result.sort((a, b) => b.dps - a.dps);
 
-  cache[optionsString] = sortedResult;
+  if (!ignorePantheonTrinkets) {
+    cache[optionsString] = sortedResult;
+  }
   return sortedResult;
 }
 
-export default function getTrinketData(trinketData, { ilevel = 940, talents = 'gg', targetCount = '1t', isFoN = 'false', display = 'chart' } = {}) {
-  const optionsString = encodeOptionsString(ilevel, talents, targetCount, isFoN, display);
+export default function getTrinketData(trinketData, { ilevel = DEFAULT_ILEVEL, talents = DEFAULT_TALENTS, targetCount = DEFAULT_TARGETCOUNT, pantheon = DEFAULT_PANTHEON, isFoN = DEFAULT_FON, display = DEFAULT_DISPLAY } = {}) {
+  const optionsString = encodeOptionsString(ilevel, talents, targetCount, pantheon, isFoN, display);
   if (cache[optionsString]) {
     return cache[optionsString];
   }
 
   if (display === 'chart') {
-    return makeChartData(trinketData, { ilevel, talents, targetCount, isFoN, display });
+    return makeChartData(trinketData, { ilevel, talents, targetCount, pantheon, isFoN, display });
   } else if (display === 'table') {
-    return makeTableData(trinketData, { ilevel, talents, targetCount, isFoN, display });
+    return makeTableData(trinketData, { ilevel, talents, targetCount, pantheon, isFoN, display });
   }
 }
 
-function encodeOptionsString(ilevel, talents, targetCount, isFoN, display) {
-  return `${ilevel}-${talents}-${targetCount}-${isFoN}-${display}`;
+function encodeOptionsString(ilevel, talents, targetCount, pantheon, isFoN, display) {
+  return `${ilevel}-${talents}-${targetCount}-${pantheon}-${isFoN}-${display}`;
 }

@@ -27,12 +27,12 @@ function generate({
   gearilevel = '930',
   weaponilevel = '950',
   talents = 'gg',
-  apltype = '1t',
   targetcount = 1,
   minilevel = MIN_ILEVEL,
   maxilevel = MAX_ILEVEL,
   trinketgroup = false,
   trinketids = '',
+  pantheon = 0,
   generateall
 }) {
   if (trinketgroup && !trinkets[trinketgroup]) {
@@ -79,11 +79,11 @@ function generate({
   console.log('chunks', chunks);
 
   for (let i = 0; i < chunks; i += 1) {
-    const baseline = templates.settings(i, { iterations, prefix: `${prefix}_${gearilevel}_${apltype}_${talents}` }, Number(targetcount) === 5);
+    const baseline = templates.settings(i, { pantheon, iterations, prefix: `${prefix}_${gearilevel}_${targetcount}t_${talents}_p${pantheon}` });
     const enemies = templates.enemies(Number(targetcount));
     const character = templates.character(gearilevel, weaponilevel, talents);
 
-    const apl = templates.apl(apltype);
+    const apl = templates.apl;
 
     let copies = '';
     for (let j = 0; j < chunkSize; j += 1) {
@@ -103,36 +103,46 @@ function generate({
     `;
 
     console.log(`Writing file ${i+1} of ${chunks}`);
-    fs.writeFileSync(`./input/${prefix}_input_${i}.simc`, fileData);
+    fs.writeFileSync(`./input/${prefix}_input_${i}_p${pantheon}.simc`, fileData);
   }
   console.log('Done');
 
 }
-
 if (args.generateall) {
-  generate({ chunk: args.chunk, prefix: '900_1t_gg', gearilevel: 900, weaponilevel: 910, talents: 'gg', apltype: '1t', targetcount: 1, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '900_1t_incarn', gearilevel: 900, weaponilevel: 910, talents: 'incarn', apltype: '1t', targetcount: 1, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '900_3t_gg', gearilevel: 900, weaponilevel: 910, talents: 'gg', apltype: '3t', targetcount: 3, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '900_3t_incarn', gearilevel: 900, weaponilevel: 910, talents: 'incarn', apltype: '3t', targetcount: 3, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '900_5t_gg', gearilevel: 900, weaponilevel: 910, talents: 'gg', apltype: '5t', targetcount: 5, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '900_5t_incarnup', gearilevel: 900, weaponilevel: 910, talents: 'incarn', apltype: '5t_incarnup', targetcount: 5, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '900_5t_incarndown', gearilevel: 900, weaponilevel: 910, talents: 'incarn', apltype: '5t_incarndown', targetcount: 5, trinketids: args.trinketids });
+  [920, 940, 960].forEach((ilevel) => {
+    const weaponIlevel = ilevel + 10;
+    [1, 3, 5].forEach((targetcount) => {
+      ['gg', 'incarn'].forEach((talents) => {
+        generate({
+          chunk: args.chunk,
+          prefix: `${ilevel}_${targetcount}t_${talents}`,
+          gearilevel: ilevel,
+          weaponilevel: weaponIlevel,
+          talents,
+          targetcount,
+          trinketids: args.trinketids,
+          pantheon: args.pantheon || 0,
+        });
+        if (args.pantheon === undefined) {
+          [5, 10, 15, 20].forEach((pantheon) => {
+            generate({
+              chunk: args.chunk,
+              prefix: `${ilevel}_${targetcount}t_${talents}`,
+              gearilevel: ilevel,
+              weaponilevel: weaponIlevel,
+              talents,
+              targetcount,
+              trinketgroup: 'pantheon',
+              pantheon,
+            });
+          });
 
-  generate({ chunk: args.chunk, prefix: '920_1t_gg', gearilevel: 920, weaponilevel: 930, talents: 'gg', apltype: '1t', targetcount: 1, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '920_1t_incarn', gearilevel: 920, weaponilevel: 930, talents: 'incarn', apltype: '1t', targetcount: 1, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '920_3t_gg', gearilevel: 920, weaponilevel: 930, talents: 'gg', apltype: '3t', targetcount: 3, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '920_3t_incarn', gearilevel: 920, weaponilevel: 930, talents: 'incarn', apltype: '3t', targetcount: 3, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '920_5t_gg', gearilevel: 920, weaponilevel: 930, talents: 'gg', apltype: '5t', targetcount: 5, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '920_5t_incarnup', gearilevel: 920, weaponilevel: 930, talents: 'incarn', apltype: '5t_incarnup', targetcount: 5, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '920_5t_incarndown', gearilevel: 920, weaponilevel: 930, talents: 'incarn', apltype: '5t_incarndown', targetcount: 5, trinketids: args.trinketids });
+        }
+      });
 
-  generate({ chunk: args.chunk, prefix: '940_1t_gg', gearilevel: 940, weaponilevel: 950, talents: 'gg', apltype: '1t', targetcount: 1, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '940_1t_incarn', gearilevel: 940, weaponilevel: 950, talents: 'incarn', apltype: '1t', targetcount: 1, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '940_3t_gg', gearilevel: 940, weaponilevel: 950, talents: 'gg', apltype: '3t', targetcount: 3, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '940_3t_incarn', gearilevel: 940, weaponilevel: 950, talents: 'incarn', apltype: '3t', targetcount: 3, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '940_5t_gg', gearilevel: 940, weaponilevel: 950, talents: 'gg', apltype: '5t', targetcount: 5, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '940_5t_incarnup', gearilevel: 940, weaponilevel: 950, talents: 'incarn', apltype: '5t_incarnup', targetcount: 5, trinketids: args.trinketids });
-  generate({ chunk: args.chunk, prefix: '940_5t_incarndown', gearilevel: 940, weaponilevel: 950, talents: 'incarn', apltype: '5t_incarndown', targetcount: 5, trinketids: args.trinketids });
+    });
+
+  });
 } else {
   generate(args);
 

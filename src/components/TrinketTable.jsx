@@ -38,6 +38,7 @@ TrinketTable.propTypes = {
   ilevel: PropTypes.number.isRequired,
   talents: PropTypes.string.isRequired,
   targetCount: PropTypes.string.isRequired,
+  pantheon: PropTypes.string.isRequired,
   isFoN: PropTypes.bool.isRequired,
   data: PropTypes.object.isRequired,
 }

@@ -68,7 +68,7 @@ module.exports.trinkets = {
     // Emerald Nightmare
     // { id: 138224, name: "Unstable Horrorslime", fury_empowerment:true },
     // { id: 139320, name: "Ravaged Seed Pod" },
-    // { id: 139321, name: "Swarming Plaguehive", fury_empowerment:true },
+    { id: 139321, name: "Swarming Plaguehive", fury_empowerment:true },
     // { id: 139323, name: "Twisting Wind" },
     // { id: 139325, name: "Spontaneous Appendages" },
     { id: 139329, name: "Bloodthirsty Instinct" },
@@ -99,6 +99,23 @@ module.exports.trinkets = {
     { id: 147011, name: "Vial of Ceaseless Toxins", "min_ilevel": 900 },
     // { id: 147022, name: "Feverish Carapace" } // NYI
     // { id: 147023, name: "Leviathan's Hunger" } // NYI
+    // Antorus
+    { id: 151963, name: "Forgefiend's Fabricator", "min_ilevel": 930 },
+    { id: 152093, name: "Gorshalach's Legacy", "min_ilevel": 930 },
+    { id: 151962, name: "Prototype Personnel Decimator", "min_ilevel": 930 },
+    { id: 151964, name: "Seeping Scourgewing", "min_ilevel": 930 },
+    { id: 151964, name: "Seeping Scourgewing", "min_ilevel": 930 },
+    { id: 151969, name: "Terminus Signaling Beacon", "min_ilevel": 930 },
+    // TBD:
+    // Riftworld Codex
+    // Diima's
+
+  ],
+
+  "pantheon": [
+    { id: 154172, name: "Aman'Thul's Vision", pantheon_procs: true, "ilevel": 1000 },
+    { id: 154173, name: "Aggramar's Conviction", pantheon_procs: true, "min_ilevel": 940, "max_ilevel": 1000 },
+    { id: 154174, name: "Golganneth's Vitality", fury_empowerment: true, pantheon_procs: true, "min_ilevel": 940, "max_ilevel": 1000 },
   ],
 
   "world":[
@@ -120,8 +137,8 @@ module.exports.trinkets = {
   ],
 
   "legendary": [
-    { id: 144259, name: "Kil'jaeden's Burning Wish", "ilevel": 970 },
-    { id: 144249, name: "Archimonde's Hatred Reborn", "ilevel": 970 }
+    { id: 144259, name: "Kil'jaeden's Burning Wish", "ilevel": 1000 },
+    { id: 144249, name: "Archimonde's Hatred Reborn", "ilevel": 1000 }
   ],
 
   // "karazhan_chest": [
@@ -135,5 +152,5 @@ module.exports.trinkets = {
 
 };
 
-module.exports.MIN_ILEVEL = 880;
-module.exports.MAX_ILEVEL = 955;
+module.exports.MIN_ILEVEL = 910;
+module.exports.MAX_ILEVEL = 985;
