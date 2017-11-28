@@ -15,7 +15,7 @@ const {
 
     let fullData = {};
     if (existingData) {
-      fullData = require(`${existingData}`);
+      fullData = require(`./${existingData}`);
     }
 
     const files = fs.readdirSync(input);
