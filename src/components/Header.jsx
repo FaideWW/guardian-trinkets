@@ -7,9 +7,9 @@ import styles from './Header.css';
 import 'react-select/dist/react-select.css';
 
 const validIlevels = [
-  { value: 900, label: '900' },
   { value: 920, label: '920' },
   { value: 940, label: '940' },
+  { value: 960, label: '960' },
 ];
 
 const validTalents = [
@@ -21,6 +21,14 @@ const validTargetCount = [
   { value: '1t', label: '1 Target' },
   { value: '3t', label: '3 Targets' },
   { value: '5t', label: '5 Targets' },
+];
+
+const validPantheon = [
+  { value: 'p0', label: 'Solo' },
+  { value: 'p5', label: '5 Users' },
+  { value: 'p10', label: '10 Users' },
+  { value: 'p15', label: '15 Users' },
+  { value: 'p20', label: '20 Users' },
 ];
 
 const validIsFoN = [
@@ -42,6 +50,10 @@ export default function Header(props) {
       <div className={styles.item}>
         Target Count:
         <Select className={styles.select} name="form-targetCount" options={validTargetCount} onChange={props.handleSetTargetCount} value={props.targetCount} clearable={false} />
+      </div>
+      <div className={styles.item}>
+        Pantheon Users:
+        <Select className={styles.select} name="form-targetCount" options={validPantheon} onChange={props.handleSetPantheon} value={props.pantheon} clearable={false} />
       </div>
       <div className={styles.item}>
         Fury of Nature?:

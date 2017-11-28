@@ -121,20 +121,23 @@ if (args.generateall) {
           talents,
           targetcount,
           trinketids: args.trinketids,
-          pantheon: 0,
+          pantheon: args.pantheon || 0,
         });
-        [5, 10, 15, 20].forEach((pantheon) => {
-          generate({
-            chunk: args.chunk,
-            prefix: `${ilevel}_${targetcount}t_${talents}`,
-            gearilevel: ilevel,
-            weaponilevel: weaponIlevel,
-            talents,
-            targetcount,
-            trinketgroup: 'pantheon',
-            pantheon,
+        if (args.pantheon === undefined) {
+          [5, 10, 15, 20].forEach((pantheon) => {
+            generate({
+              chunk: args.chunk,
+              prefix: `${ilevel}_${targetcount}t_${talents}`,
+              gearilevel: ilevel,
+              weaponilevel: weaponIlevel,
+              talents,
+              targetcount,
+              trinketgroup: 'pantheon',
+              pantheon,
+            });
           });
-        });
+
+        }
       });
 
     });

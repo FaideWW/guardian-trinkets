@@ -137,8 +137,8 @@ module.exports.trinkets = {
   ],
 
   "legendary": [
-    { id: 144259, name: "Kil'jaeden's Burning Wish", "ilevel": 970 },
-    { id: 144249, name: "Archimonde's Hatred Reborn", "ilevel": 970 }
+    { id: 144259, name: "Kil'jaeden's Burning Wish", "ilevel": 1000 },
+    { id: 144249, name: "Archimonde's Hatred Reborn", "ilevel": 1000 }
   ],
 
   // "karazhan_chest": [
