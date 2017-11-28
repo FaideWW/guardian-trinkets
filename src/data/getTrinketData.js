@@ -97,7 +97,7 @@ function makeTableData(trinketData, { ilevel = DEFAULT_ILEVEL, talents = DEFAULT
   // Only pantheon trinkets were simmed at >p0, so fetch the p0 trinkets first and overwrite the pantheon ones
   if (pantheon !== 'p0') {
     result = makeTableData(trinketData, { ilevel, talents, targetCount, pantheon: 'p0', isFoN, display }, true);
-
+  }
 
   Object.keys(trinketCategory).forEach((trinketName) => {
     if (trinketName === 'csv') {
