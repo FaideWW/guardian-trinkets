@@ -22,7 +22,7 @@ const {
     const fullCSV = ['gearilevel,talent,targetcount,pantheon,name,ilevel,fon,dps,relative'];
     let trinketCount = 0;
 
-    const filenamePattern = /(900|920|940)_(1t|3t|5t)_(gg|incarn)_(p0|p5|p10|p15|p20)_result_(\d+).json/;
+    const filenamePattern = /(920|940|960)_(1t|3t|5t)_(gg|incarn)_(p0|p5|p10|p15|p20)_result_(\d+).json/;
 
     const timestamp = new Date();
     const dateString = `${timestamp.getFullYear()}-${timestamp.getMonth()}-${timestamp.getDate()}`;
