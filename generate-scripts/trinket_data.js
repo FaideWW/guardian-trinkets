@@ -106,9 +106,10 @@ module.exports.trinkets = {
     { id: 151964, name: "Seeping Scourgewing", "min_ilevel": 930 },
     { id: 151964, name: "Seeping Scourgewing", "min_ilevel": 930 },
     { id: 151969, name: "Terminus Signaling Beacon", "min_ilevel": 930 },
+    { id: 151977, name: "Diima's Glacial Aegis", "min_ilevel": 930 },
+    { id: 151978, name: "Smoldering Titanguard", "min_ilevel": 930 }
     // TBD:
     // Riftworld Codex
-    // Diima's
 
   ],
 
